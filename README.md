@@ -8,6 +8,12 @@ Es la parte práctica de lo que vi en el curso de Big Data y Business Intelligen
 
 Abre `index.html` en el navegador. No necesita servidor ni instalación.
 
+## Registrar ventas
+
+El formulario de abajo permite añadir ventas nuevas, incluso de meses o categorías que no estaban en los datos: el filtro, el gráfico y los indicadores se actualizan solos.
+
+Lo que añadas se guarda en el almacenamiento local del navegador, así que sigue ahí al recargar la página, pero no sale de tu equipo ni lo ve nadie más. Se puede quitar una venta suelta o borrarlas todas de golpe.
+
 ## Detalles técnicos
 
 - HTML, CSS y JavaScript, sin librerías ni dependencias.
