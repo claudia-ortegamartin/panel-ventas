@@ -1,20 +1,20 @@
-/* Identidad: herramienta de analitica. Fondo claro, mucha densidad de dato,
-   acento verde azulado distinto al del resto de proyectos. */
+/* Identidad: herramienta de analitica. Azules sobrios, mucha densidad de dato.
+   El azul es mas vivo que el del portfolio para que no parezcan la misma web. */
 :root {
   /* Tres niveles a proposito: barra oscura, lienzo gris y tarjetas blancas.
      Si el lienzo fuese casi blanco, las tarjetas no se despegarian del fondo. */
-  --bar: #10343a;
-  --bg: #dde6e8;
+  --bar: #15314f;
+  --bg: #dfe6f0;
   --surface: #ffffff;
-  --ink: #1b2327;
-  --ink-soft: #5a676e;
-  --ink-muted: #87939b;
-  --line: #e2e6ea;
-  --line-strong: #c3ced2;
+  --ink: #1a2330;
+  --ink-soft: #566376;
+  --ink-muted: #828fa3;
+  --line: #e3e8f0;
+  --line-strong: #c2cddd;
   /* Color de dato: validado sobre superficie clara. Mas saturado que el cromo
      de interfaz, que si no las barras se leen grises. */
-  --data: #0d9488;
-  --data-soft: #e2f3f1;
+  --data: #1b6ec2;
+  --data-soft: #e4edf8;
   --alert: #c0392b;
   --font-sans: "Inter", "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "Courier New", monospace;
@@ -32,7 +32,7 @@ body {
 
 .topbar {
   background: var(--bar);
-  color: #eef5f4;
+  color: #eef3f9;
   padding: 20px;
 }
 
@@ -51,7 +51,7 @@ body {
 .lead {
   margin: 0;
   font-size: 14px;
-  color: #a7c3c2;
+  color: #a9bdd6;
 }
 
 .app {
@@ -107,7 +107,7 @@ input:focus-visible {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 14px 16px;
-  box-shadow: 0 1px 2px rgba(16, 52, 58, 0.06);
+  box-shadow: 0 1px 2px rgba(21, 49, 79, 0.07);
 }
 
 .kpi-label {
@@ -130,7 +130,7 @@ input:focus-visible {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 2px rgba(16, 52, 58, 0.06);
+  box-shadow: 0 1px 2px rgba(21, 49, 79, 0.07);
 }
 
 .panel-title {
@@ -246,7 +246,7 @@ input:focus-visible {
   border-radius: 6px;
   cursor: pointer;
 }
-.btn:hover { background: #0b7f75; border-color: #0b7f75; }
+.btn:hover { background: #17619f; border-color: #17619f; }
 .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 .btn--ghost {
