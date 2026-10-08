@@ -23,12 +23,22 @@
 
   <section class="toolbar">
     <div class="filter">
-      <label for="month">Mes</label>
-      <select id="month"></select>
+      <span class="field-label" id="month-label">Mes</span>
+      <div class="dropdown" data-dropdown>
+        <button type="button" class="dropdown-toggle" id="month" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="month-label month">
+          <span class="dropdown-value"></span>
+        </button>
+        <ul class="dropdown-list" role="listbox" aria-labelledby="month-label" hidden></ul>
+      </div>
     </div>
     <div class="filter">
-      <label for="category">Categoría</label>
-      <select id="category"></select>
+      <span class="field-label" id="category-label">Categoría</span>
+      <div class="dropdown" data-dropdown>
+        <button type="button" class="dropdown-toggle" id="category" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="category-label category">
+          <span class="dropdown-value"></span>
+        </button>
+        <ul class="dropdown-list" role="listbox" aria-labelledby="category-label" hidden></ul>
+      </div>
     </div>
   </section>
 
@@ -70,23 +80,29 @@
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel panel--register">
     <h2 class="panel-title">Registrar una venta</h2>
+
+    <div class="register">
 
     <form id="sale-form" novalidate>
       <div class="grid">
         <div class="field">
-          <label for="f-month">Mes</label>
-          <select id="f-month" required></select>
+          <span class="field-label" id="f-month-label">Mes</span>
+          <div class="dropdown" data-dropdown>
+            <button type="button" class="dropdown-toggle" id="f-month" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="f-month-label f-month">
+              <span class="dropdown-value"></span>
+            </button>
+            <ul class="dropdown-list" role="listbox" aria-labelledby="f-month-label" hidden></ul>
+          </div>
         </div>
         <div class="field">
           <label for="f-category">Categoría</label>
-          <input type="text" id="f-category" list="categories" placeholder="Camisetas" required>
-          <datalist id="categories"></datalist>
+          <input type="text" id="f-category" placeholder="Camisetas" required autocomplete="off">
         </div>
         <div class="field field--wide">
           <label for="f-product">Producto</label>
-          <input type="text" id="f-product" placeholder="Camiseta básica" required>
+          <input type="text" id="f-product" placeholder="Camiseta básica" required autocomplete="off">
         </div>
         <div class="field">
           <label for="f-units">Unidades</label>
@@ -98,12 +114,17 @@
         </div>
       </div>
 
+      <div class="suggestions">
+        <span class="suggestions-label">Categorías ya usadas:</span>
+        <div class="suggestions-list" id="category-suggestions"></div>
+      </div>
+
       <p class="form-error" id="form-error" role="alert" hidden></p>
 
       <div class="form-actions">
         <button type="submit" class="btn">Añadir venta</button>
-        <p class="form-note">Se guarda solo en este navegador. Nadie más ve lo que registres.</p>
       </div>
+      <p class="form-note">Se guarda solo en este navegador. Nadie más ve lo que registres.</p>
     </form>
 
     <div id="saved-wrap" hidden>
@@ -112,6 +133,8 @@
         <button type="button" class="btn btn--ghost" id="clear-all">Borrar todas</button>
       </div>
       <ul class="saved" id="saved"></ul>
+    </div>
+
     </div>
   </section>
 

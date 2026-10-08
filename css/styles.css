@@ -22,6 +22,11 @@
 
 * { box-sizing: border-box; }
 
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--data) var(--bg);
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -29,6 +34,15 @@ body {
   font-family: var(--font-sans);
   line-height: 1.55;
 }
+
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: #9fb2c9;
+  border: 3px solid var(--bg);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--data); }
 
 .topbar {
   background: var(--bar);
@@ -77,7 +91,14 @@ label {
   margin-bottom: 5px;
 }
 
-select,
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+}
+
 input {
   width: 100%;
   font-family: var(--font-sans);
@@ -89,11 +110,71 @@ input {
   border-radius: 6px;
 }
 
-select:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--data);
   outline-offset: 1px;
 }
+
+/* Desplegable propio: el popup nativo de <select> no se puede estilar. */
+.dropdown { position: relative; }
+
+.dropdown-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  text-align: left;
+  padding: 9px 11px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.dropdown-toggle:hover { border-color: var(--data); }
+.dropdown-toggle:focus-visible { outline: 2px solid var(--data); outline-offset: 1px; }
+
+.dropdown-toggle::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-right: 2px solid var(--ink-muted);
+  border-bottom: 2px solid var(--ink-muted);
+  transform: translateY(-2px) rotate(45deg);
+}
+.dropdown-toggle[aria-expanded="true"]::after {
+  transform: translateY(2px) rotate(225deg);
+}
+
+.dropdown-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  box-shadow: 0 10px 26px -10px rgba(21, 49, 79, 0.35);
+}
+
+.dropdown-option {
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.dropdown-option.is-active { background: var(--data-soft); }
+.dropdown-option.is-selected { color: var(--data); font-weight: 600; }
 
 .kpis {
   display: grid;
@@ -207,6 +288,21 @@ input:focus-visible {
   white-space: nowrap;
 }
 
+/* Formulario a un lado y lo registrado al otro, para no perder de vista lo que
+   ya se ha metido mientras se escribe lo siguiente. */
+@media (min-width: 820px) {
+  .register {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    align-items: start;
+  }
+  .register > #saved-wrap {
+    padding-left: 26px;
+    border-left: 1px solid var(--line);
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -258,14 +354,40 @@ input:focus-visible {
 }
 .btn--ghost:hover { color: var(--alert); background: #fdf1ef; border-color: var(--alert); }
 
+.suggestions { margin-top: 14px; }
+
+.suggestions-label {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-bottom: 7px;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.suggestion {
+  font-family: inherit;
+  font-size: 12.5px;
+  padding: 4px 10px;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  cursor: pointer;
+}
+.suggestion:hover { color: var(--data); border-color: var(--data); background: var(--data-soft); }
+.suggestion:focus-visible { outline: 2px solid var(--data); outline-offset: 1px; }
+
 .saved-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin: 26px 0 10px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
+  margin: 0 0 10px;
 }
 
 .saved-title {

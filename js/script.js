@@ -1,4 +1,135 @@
 (function () {
+  /* Desplegable propio. El popup de un <select> lo pinta el sistema operativo y
+     no se puede estilar, asi que se sustituye por una lista normal para que siga
+     el aspecto de la pagina. Mantiene lo que da el nativo: teclado, roles ARIA
+     y cierre al pulsar fuera. */
+  function createDropdown(root) {
+    var toggle = root.querySelector(".dropdown-toggle");
+    var label = root.querySelector(".dropdown-value");
+    var list = root.querySelector(".dropdown-list");
+    var options = [];
+    var value = null;
+    var listeners = [];
+    var activeIndex = -1;
+
+    function isOpen() {
+      return !list.hidden;
+    }
+
+    function textFor(val) {
+      for (var i = 0; i < options.length; i++) {
+        if (options[i].value === val) return options[i].text;
+      }
+      return "";
+    }
+
+    function paint() {
+      label.textContent = textFor(value);
+      Array.prototype.forEach.call(list.children, function (item, index) {
+        var selected = options[index].value === value;
+        item.setAttribute("aria-selected", selected ? "true" : "false");
+        item.classList.toggle("is-selected", selected);
+        item.classList.toggle("is-active", index === activeIndex);
+      });
+    }
+
+    function close() {
+      if (!isOpen()) return;
+      list.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+      activeIndex = -1;
+    }
+
+    function open() {
+      if (isOpen()) return;
+      closeOthers(root);
+      list.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+      activeIndex = Math.max(0, options.findIndex(function (option) {
+        return option.value === value;
+      }));
+      paint();
+      scrollActiveIntoView();
+    }
+
+    function scrollActiveIntoView() {
+      var item = list.children[activeIndex];
+      if (item && item.scrollIntoView) item.scrollIntoView({ block: "nearest" });
+    }
+
+    function choose(index) {
+      if (!options[index]) return;
+      value = options[index].value;
+      paint();
+      close();
+      toggle.focus();
+      listeners.forEach(function (callback) { callback(value); });
+    }
+
+    function move(step) {
+      if (!isOpen()) {
+        open();
+        return;
+      }
+      activeIndex = (activeIndex + step + options.length) % options.length;
+      paint();
+      scrollActiveIntoView();
+    }
+
+    toggle.addEventListener("click", function () {
+      if (isOpen()) close(); else open();
+    });
+
+    toggle.addEventListener("keydown", function (event) {
+      if (event.key === "ArrowDown") { event.preventDefault(); move(1); }
+      else if (event.key === "ArrowUp") { event.preventDefault(); move(-1); }
+      else if (event.key === "Enter" || event.key === " ") {
+        if (isOpen()) { event.preventDefault(); choose(activeIndex); }
+      } else if (event.key === "Escape") { close(); }
+      else if (event.key === "Home" && isOpen()) { event.preventDefault(); activeIndex = 0; paint(); scrollActiveIntoView(); }
+      else if (event.key === "End" && isOpen()) { event.preventDefault(); activeIndex = options.length - 1; paint(); scrollActiveIntoView(); }
+    });
+
+    return {
+      root: root,
+      close: close,
+      setOptions: function (nextOptions, keepValue) {
+        options = nextOptions;
+        list.innerHTML = "";
+        options.forEach(function (option, index) {
+          var item = document.createElement("li");
+          item.className = "dropdown-option";
+          item.setAttribute("role", "option");
+          item.textContent = option.text;
+          item.addEventListener("click", function () { choose(index); });
+          item.addEventListener("mousemove", function () { activeIndex = index; paint(); });
+          list.appendChild(item);
+        });
+
+        var stillThere = options.some(function (option) { return option.value === keepValue; });
+        value = stillThere ? keepValue : (options[0] ? options[0].value : null);
+        paint();
+      },
+      getValue: function () { return value; },
+      setValue: function (next) { value = next; paint(); },
+      onChange: function (callback) { listeners.push(callback); },
+    };
+  }
+
+  var dropdowns = [];
+
+  function closeOthers(except) {
+    dropdowns.forEach(function (dropdown) {
+      if (dropdown.root !== except) dropdown.close();
+    });
+  }
+
+  document.addEventListener("click", function (event) {
+    dropdowns.forEach(function (dropdown) {
+      if (!dropdown.root.contains(event.target)) dropdown.close();
+    });
+  });
+
   var STORAGE_KEY = "panel-ventas:ventas";
   var ALL = "todos";
   var MONTHS = [
@@ -6,8 +137,8 @@
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
   ];
 
-  var monthSelect = document.getElementById("month");
-  var categorySelect = document.getElementById("category");
+  var monthSelect = createDropdown(document.getElementById("month").closest("[data-dropdown]"));
+  var categorySelect = createDropdown(document.getElementById("category").closest("[data-dropdown]"));
   var chart = document.getElementById("chart");
   var chartEmpty = document.getElementById("chart-empty");
   var tableBody = document.getElementById("table-body");
@@ -15,12 +146,14 @@
 
   var form = document.getElementById("sale-form");
   var formError = document.getElementById("form-error");
-  var fMonth = document.getElementById("f-month");
+  var fMonth = createDropdown(document.getElementById("f-month").closest("[data-dropdown]"));
   var fCategory = document.getElementById("f-category");
   var fProduct = document.getElementById("f-product");
   var fUnits = document.getElementById("f-units");
   var fRevenue = document.getElementById("f-revenue");
-  var categories = document.getElementById("categories");
+  var suggestions = document.getElementById("category-suggestions");
+
+  dropdowns.push(monthSelect, categorySelect, fMonth);
 
   var savedWrap = document.getElementById("saved-wrap");
   var savedList = document.getElementById("saved");
@@ -87,48 +220,40 @@
 
   // Al refrescar los desplegables se conserva lo que hubiera elegido el usuario,
   // salvo que ese valor ya no exista en los datos.
-  function refreshSelect(select, values, allLabel) {
-    var previous = select.value;
-    select.innerHTML = "";
-
-    var allOption = document.createElement("option");
-    allOption.value = ALL;
-    allOption.textContent = allLabel;
-    select.appendChild(allOption);
-
+  function refreshSelect(dropdown, values, allLabel) {
+    var options = [{ value: ALL, text: allLabel }];
     values.forEach(function (value) {
-      var option = document.createElement("option");
-      option.value = value;
-      option.textContent = value;
-      select.appendChild(option);
+      options.push({ value: value, text: value });
     });
-
-    select.value = values.indexOf(previous) !== -1 ? previous : ALL;
+    dropdown.setOptions(options, dropdown.getValue());
   }
 
   function refreshFormOptions() {
-    var used = unique(allSales(), "category").sort();
+    fMonth.setOptions(
+      MONTHS.map(function (month) { return { value: month, text: month }; }),
+      fMonth.getValue() || MONTHS[0]
+    );
 
-    fMonth.innerHTML = "";
-    MONTHS.forEach(function (month) {
-      var option = document.createElement("option");
-      option.value = month;
-      option.textContent = month;
-      fMonth.appendChild(option);
-    });
-
-    categories.innerHTML = "";
-    used.forEach(function (category) {
-      var option = document.createElement("option");
-      option.value = category;
-      categories.appendChild(option);
+    // Las categorias ya usadas van como botones y no como <datalist>, cuyo
+    // desplegable tampoco se puede estilar.
+    suggestions.innerHTML = "";
+    unique(allSales(), "category").sort().forEach(function (category) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "suggestion";
+      chip.textContent = category;
+      chip.addEventListener("click", function () {
+        fCategory.value = category;
+        fCategory.focus();
+      });
+      suggestions.appendChild(chip);
     });
   }
 
   function getFilteredRows() {
     return allSales().filter(function (row) {
-      var monthOk = monthSelect.value === ALL || row.month === monthSelect.value;
-      var categoryOk = categorySelect.value === ALL || row.category === categorySelect.value;
+      var monthOk = monthSelect.getValue() === ALL || row.month === monthSelect.getValue();
+      var categoryOk = categorySelect.getValue() === ALL || row.category === categorySelect.getValue();
       return monthOk && categoryOk;
     });
   }
@@ -301,7 +426,7 @@
     }
 
     savedSales.push({
-      month: fMonth.value,
+      month: fMonth.getValue(),
       category: category,
       product: product,
       units: units,
@@ -328,8 +453,8 @@
     update();
   });
 
-  monthSelect.addEventListener("change", update);
-  categorySelect.addEventListener("change", update);
+  monthSelect.onChange(update);
+  categorySelect.onChange(update);
 
   update();
 })();
