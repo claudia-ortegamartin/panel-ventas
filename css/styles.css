@@ -1,0 +1,214 @@
+:root {
+  --ink: #16293a;
+  --ink-soft: #4a5c6b;
+  --ink-muted: #6b7b88;
+  --blue: #245777;
+  --blue-deep: #17374c;
+  /* Las barras llevan un azul con mas saturacion que el de la interfaz: una
+     marca de datos poco saturada acaba leyendose como gris. */
+  --data: #17699b;
+  --paper: #f3f5f2;
+  --backdrop: #0f2029;
+  --line: #d4dbdf;
+  --font-sans: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--backdrop);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  padding: 40px 20px 64px;
+}
+
+.app {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.app-head { color: var(--paper); margin-bottom: 24px; }
+
+.app-head h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 6vw, 34px);
+  font-weight: 700;
+}
+
+.lead {
+  margin: 0;
+  font-size: 15px;
+  color: #a9bcc7;
+  max-width: 56ch;
+}
+
+.filters {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.filter { flex: 1 1 200px; }
+
+.filter label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #a9bcc7;
+  margin-bottom: 6px;
+}
+
+select {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid transparent;
+}
+select:focus-visible { outline: 2px solid var(--data); outline-offset: 2px; }
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.kpi {
+  background: var(--paper);
+  padding: 18px 20px;
+}
+
+.kpi-label {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.kpi-value {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(20px, 3.4vw, 26px);
+  font-weight: 600;
+  color: var(--blue-deep);
+}
+
+.card {
+  background: var(--paper);
+  padding: 24px;
+  margin-bottom: 18px;
+}
+
+.card-title {
+  margin: 0 0 20px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  /* 2px de superficie entre barras contiguas */
+  margin-bottom: 10px;
+  padding: 1px 0;
+}
+.bar-row:last-child { margin-bottom: 0; }
+
+.bar-label {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.bar-track {
+  background: #e4e9ec;
+  height: 22px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--data);
+  /* extremo de dato redondeado, base anclada */
+  border-radius: 0 4px 4px 0;
+  min-width: 2px;
+}
+
+.bar-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.table td {
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.table tr:last-child td { border-bottom: none; }
+
+.table .num {
+  text-align: right;
+  font-family: var(--font-mono);
+  padding-left: 14px;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 10;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13px;
+  padding: 7px 10px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.app-foot {
+  color: #8da2ae;
+  font-size: 13px;
+  text-align: center;
+}
+.app-foot a { color: #a9bcc7; }
+.app-foot a:hover { color: var(--paper); }
+
+@media (max-width: 620px) {
+  body { padding: 28px 14px 48px; }
+  .card { padding: 18px; }
+  .kpis { grid-template-columns: 1fr; gap: 10px; }
+  .kpi { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .kpi-label { margin: 0; }
+  .bar-row { grid-template-columns: 92px 1fr; row-gap: 4px; }
+  .bar-value { grid-column: 2; justify-self: end; }
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de ventas</title>
+<meta name="description" content="Panel de ventas de una tienda de ropa: indicadores, ventas por categoria y productos mas vendidos, con filtros por mes y categoria.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<main class="app">
+  <header class="app-head">
+    <h1>Panel de ventas</h1>
+    <p class="lead">Datos de ejemplo de una tienda de ropa, primer semestre. Filtra por mes y categoría para ver cómo cambian los indicadores.</p>
+  </header>
+
+  <div class="filters">
+    <div class="filter">
+      <label for="month">Mes</label>
+      <select id="month"></select>
+    </div>
+    <div class="filter">
+      <label for="category">Categoría</label>
+      <select id="category"></select>
+    </div>
+  </div>
+
+  <section class="kpis" aria-live="polite">
+    <article class="kpi">
+      <p class="kpi-label">Ventas totales</p>
+      <p class="kpi-value" id="kpi-revenue">0 €</p>
+    </article>
+    <article class="kpi">
+      <p class="kpi-label">Unidades vendidas</p>
+      <p class="kpi-value" id="kpi-units">0</p>
+    </article>
+    <article class="kpi">
+      <p class="kpi-label">Precio medio por unidad</p>
+      <p class="kpi-value" id="kpi-average">0 €</p>
+    </article>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">Ventas por categoría</h2>
+    <div class="chart" id="chart"></div>
+    <p class="empty" id="chart-empty" hidden>No hay ventas con estos filtros.</p>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">Productos más vendidos</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Producto</th>
+          <th scope="col">Categoría</th>
+          <th scope="col" class="num">Unidades</th>
+          <th scope="col" class="num">Ventas</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </section>
+
+  <footer class="app-foot">
+    <p>Hecho con HTML, CSS y JavaScript, sin librerías.
+      <a href="https://github.com/claudia-ortegamartin/panel-ventas" target="_blank" rel="noopener">Código en GitHub</a>.</p>
+  </footer>
+</main>
+
+<div class="tooltip" id="tooltip" role="status" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>
